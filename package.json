@@ -1,0 +1,27 @@
+{
+  "name": "declarate",
+  "version": "1.0.0",
+  "description": "Turn imperative APIs into declarative APIs!",
+  "main": "index.js",
+  "scripts": {
+    "start": "budo example/index.ts:bundle.js -- -p tsify",
+    "test": "mocha --compilers ts:ts-node/register test/**/*.ts",
+    "test/auto": "mocha --compilers ts:ts-node/register test/**/*.ts --watch -R min"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/mocha": "^2.2.43",
+    "@types/node": "^8.0.32",
+    "budo": "^10.0.4",
+    "leaflet": "^1.2.0",
+    "mocha": "^3.5.3",
+    "ts-node": "^3.3.0",
+    "tsify": "^3.0.3",
+    "typescript": "^2.5.3"
+  },
+  "dependencies": {
+    "deep-diff": "^0.3.8"
+  }
+}
