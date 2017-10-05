@@ -1,5 +1,3 @@
-
-
 function setDifference(a, b) {
   const differences = [];
 
@@ -13,16 +11,6 @@ function setDifference(a, b) {
 }
 
 function diff (oldState, newState) {
-  // given an old state and a new state
-  // where the state is an object of resources
-  //
-  //for each resource
-  // create a set of ids for old state and new state
-  //  take the items in the old state, but not in the new state and remove them
-  //  take the items in the new state, but not in the old state and add them
-  //  for the remaining items, check if the old state is equal to the new state
-  //  if not, update
-
   const resources = Object.keys(newState);
   const differences = [];
 
@@ -58,45 +46,33 @@ function diff (oldState, newState) {
 }
 
 export function declarate(cfg: any, map: any) {
-  const markers: any[] = [];
   let oldState = {markers: []};
+  const markers: any[] = [];
   const resourceCache = {markers: {}};
 
   const patch = function (state: any) {
-    const improved = true;
-    if (improved) {
-      const differences = diff(oldState, state);
-      differences.forEach(difference => {
-        if (difference.type === 'add') {
-          const marker = cfg[difference.resource].create(map, difference.args);
+    const differences = diff(oldState, state);
 
-          resourceCache.markers[difference.args.id] = marker;
+    differences.forEach(difference => {
+      if (difference.type === 'add') {
+        const marker = cfg[difference.resource].create(map, difference.args);
 
-          cfg.markers.attach(map, marker);
-        } else if (difference.type === 'remove') {
-          cfg[difference.resource].remove(
-            map,
-            resourceCache[difference.resource][difference.id]
-          );
-        } else {
-          throw new Error(`Unimplemented type: ${difference.type}`);
-        }
-      });
+        resourceCache.markers[difference.args.id] = marker;
 
-      oldState = state;
-    } else {
-      while (markers.length > 0) {
-        cfg.markers.remove(map, markers.pop());
+        cfg.markers.attach(map, marker);
+      } else if (difference.type === 'remove') {
+        cfg[difference.resource].remove(
+          map,
+          resourceCache[difference.resource][difference.id]
+        );
+
+        delete resourceCache[difference.resource][difference.id];
+      } else {
+        throw new Error(`Unimplemented type: ${difference.type}`);
       }
+    });
 
-      state.markers.forEach((markerData: any) => {
-        const marker = cfg.markers.create(map, markerData);
-
-        markers.push(marker);
-
-        map.addLayer(marker);
-      })
-    }
+    oldState = state;
   }
 
   return {
